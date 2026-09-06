@@ -1,0 +1,21 @@
+line-length = 88
+target-version = "py312"
+
+[lint]
+select = ["ALL"]
+ignore = [
+    "S104",
+    "D100",
+    "D104",
+    "CPY",
+]
+
+[lint.per-file-ignores]
+# example: relax rules in tests
+"tests/**" = ["S101"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+line-ending = "auto"

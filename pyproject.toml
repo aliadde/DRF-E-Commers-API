@@ -1,0 +1,27 @@
+[project]
+name = "django-ecommers"
+version = "0.1.0"
+description = "This is a e-commers API with Django DRF"
+readme = "README.md"
+authors = [
+    { name = "aliadde", email = "aliadely1384@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "django>=6.1.1",
+    "djangorestframework>=3.18.0",
+    "python-dotenv>=1.2.3",
+]
+
+[project.scripts]
+django-ecommers = "django_ecommers:main"
+
+[build-system]
+requires = ["uv_build>=0.12.9,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.3.1",
+    "ruff>=0.16.6",
+]
