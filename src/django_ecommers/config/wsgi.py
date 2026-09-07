@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.get('DJANGO_SETTINGS_MODULE', 'django_ecommers.settings')
+os.environ.get("DJANGO_SETTINGS_MODULE", "django_ecommers.settings")
 
 application = get_wsgi_application()

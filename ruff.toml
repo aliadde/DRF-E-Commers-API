@@ -2,12 +2,24 @@ line-length = 88
 target-version = "py312"
 
 [lint]
-select = ["ALL"]
+exclude = ['src/scripts/]
+
+select = [
+    "ALL",
+]
+
 ignore = [
     "S104",
     "D100",
     "D104",
     "CPY",
+    "D103",
+    "D",
+    "COM812",
+    "TRY",
+    "EM",
+    "PLC",
+    "ANN",
 ]
 
 [lint.per-file-ignores]

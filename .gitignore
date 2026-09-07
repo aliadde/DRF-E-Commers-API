@@ -14,3 +14,5 @@ wheels/
 
 # database sqlite
 *.sqlite3
+
+#  dev tasks 
