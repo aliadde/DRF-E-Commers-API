@@ -25,3 +25,7 @@ migrate:
 # uv run python src/manage.py shell
 django-shell:
     uv run python src/manage.py shell
+
+# run pytest 
+pytest *args:
+    uv run pytest {{args}}

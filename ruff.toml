@@ -20,6 +20,7 @@ ignore = [
     "EM",
     "PLC",
     "ANN",
+    "F401",
 ]
 
 [lint.per-file-ignores]
