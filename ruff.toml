@@ -2,7 +2,7 @@ line-length = 88
 target-version = "py312"
 
 [lint]
-exclude = ['src/scripts/]
+exclude = ['src/scripts/']
 
 select = [
     "ALL",
@@ -21,6 +21,7 @@ ignore = [
     "PLC",
     "ANN",
     "F401",
+    "DJ",
 ]
 
 [lint.per-file-ignores]
