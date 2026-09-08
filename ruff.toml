@@ -2,8 +2,10 @@ line-length = 88
 target-version = "py312"
 
 [lint]
-exclude = ['src/scripts/']
-
+exclude = [
+    'scripts',
+    'tests',
+]
 select = [
     "ALL",
 ]

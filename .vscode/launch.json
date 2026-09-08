@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "pytest",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "module": "pytest",
+            "args": "${file}"
+        },
+        {
             "name": "Debugger: Django",
             "type": "debugpy",
             "request": "launch",
