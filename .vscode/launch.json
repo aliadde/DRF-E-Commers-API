@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "pytest specific test in currrent file",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "module": "pytest",
+            "args": "${file}::${selectedText}"
+        },
+        {
             "name": "pytest",
             "type": "debugpy",
             "request": "launch",

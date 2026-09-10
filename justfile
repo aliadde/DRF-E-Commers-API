@@ -1,6 +1,6 @@
 # run server on development localhost:8000
 runserver:
-    uv run python src/manage.py runserver 
+    uv run python src/manage.py runserver
 
 # clean the environment from chache files and folders
 cleaner *args:
@@ -26,6 +26,20 @@ migrate:
 django-shell:
     uv run python src/manage.py shell
 
-# run pytest 
+# run pytest
 pytest *args:
     uv run pytest {{args}}
+
+# pre-commit
+pre-commit *args:
+    uv run pre-commit {{args}}
+
+# add package (if you want to add --dev put it after add)
+add *args:
+    uv add {{args}}
+
+# merge current branch to main branch
+merge-to-main current_branch:
+    git switch main
+    git merge {{current_branch}}
+    git switch {{current_branch}}

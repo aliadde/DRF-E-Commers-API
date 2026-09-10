@@ -1,16 +1,9 @@
 import os
 from pathlib import Path
 
-# import sys
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# sys.path.insert(0, str(BASE_DIR  / "apps"))
-
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: list[str] = []
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
@@ -25,7 +18,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
+    "rest_framework",
     "django_ecommers.apps.users.apps.UsersConfig",
 ]
 

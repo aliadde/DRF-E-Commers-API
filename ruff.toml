@@ -4,7 +4,7 @@ target-version = "py312"
 [lint]
 exclude = [
     'scripts',
-    'tests',
+    "**/tests/**",
 ]
 select = [
     "ALL",
@@ -24,6 +24,11 @@ ignore = [
     "ANN",
     "F401",
     "DJ",
+    "RUF",
+    "ARG",
+    "A002",
+    "F403",
+    "F405",
 ]
 
 [lint.per-file-ignores]
