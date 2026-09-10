@@ -22,5 +22,5 @@ from django_ecommers.apps.users.views import UserView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("user/auth", view=UserView.as_view()),
+    path("user/auth", view=UserView.as_view(), name="users"),
 ]
