@@ -18,9 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from django_ecommers.apps.users.views import UserView
-
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("user/auth", view=UserView.as_view(), name="users"),
+    path("user/", include("django_ecommers.apps.users.urls")),
 ]
