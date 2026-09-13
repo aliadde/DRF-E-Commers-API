@@ -13,7 +13,7 @@ class TestUserRegisterRequestSerializer:
 
     def valid_payload(self):
         return {
-            "name": "Ali Rezaei",
+            "username": "Ali Rezaei",
             "email": "ali@example.com",
             "password": "StrongPass123",
         }
@@ -40,11 +40,11 @@ class TestUserRegisterRequestSerializer:
 
     def test_blank_name_is_invalid(self):
         payload = self.valid_payload()
-        payload["name"] = ""
+        payload["username"] = ""
 
         serializer = UserRegisterRequestSerializer(data=payload)
         assert serializer.is_valid() is False
-        assert "name" in serializer.errors
+        assert "username" in serializer.errors
 
     def test_missing_password_is_invalid(self):
         payload = self.valid_payload()
@@ -77,13 +77,13 @@ class TestUserRegisterResponseSerializer:
     """test serializer response regisration"""
 
     def create_user(self):
-        return Users.objects.create(name="Sara", email="sara@example.com")
+        return Users.objects.create(username="Sara", email="sara@example.com")
 
     def test_response_contains_expected_fields(self):
         user = self.create_user()
         serializer = UserRegisterResponseSerializer(instance=user)
 
-        assert set(serializer.data.keys()) == {"id", "name", "email"}
+        assert set(serializer.data.keys()) == {"id", "username", "email"}
 
     def test_response_never_exposes_password(self):
         """
@@ -103,5 +103,5 @@ class TestUserRegisterResponseSerializer:
         serializer = UserRegisterResponseSerializer(instance=user)
 
         assert serializer.data["id"] == user.id
-        assert serializer.data["name"] == user.name
+        assert serializer.data["username"] == user.username
         assert serializer.data["email"] == user.email

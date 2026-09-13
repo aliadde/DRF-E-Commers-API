@@ -18,12 +18,13 @@ def factory():
 @pytest.fixture
 def valid_payload():
     return {
-        "name": "john_doe",
+        "username": "john_doe",
         "email": "john@example.com",
         "password": "SuperSecret123",
     }
 
 
+@pytest.mark.django_db
 class TestUserViewPost:
     """Tests for UserView.post"""
 
@@ -44,7 +45,7 @@ class TestUserViewPost:
         mock_response_serializer = mock_response_serializer_cls.return_value
         mock_response_serializer.data = {
             "id": 1,
-            "name": "john_doe",
+            "username": "john_doe",
             "email": "john@example.com",
         }
 
@@ -59,7 +60,7 @@ class TestUserViewPost:
         # Assert: service called with validated data
         mock_service.create_user.assert_called_once()
         _, kwargs = mock_service.create_user.call_args
-        assert kwargs["user_data"]["name"] == valid_payload["name"]
+        assert kwargs["user_data"]["username"] == valid_payload["username"]
         assert kwargs["user_data"]["email"] == valid_payload["email"]
 
         # Assert: response serializer built from the created user
@@ -131,7 +132,7 @@ class TestUserViewPost:
         mock_response_serializer = mock_response_serializer_cls.return_value
         mock_response_serializer.data = {
             "id": 1,
-            "name": "john_doe",
+            "username": "john_doe",
             "email": "john@example.com",
         }
 

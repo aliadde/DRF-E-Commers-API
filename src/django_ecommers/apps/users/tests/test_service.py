@@ -16,7 +16,7 @@ def user_service():
 @pytest.fixture
 def valid_user_data():
     return {
-        "name": "john_doe",
+        "username": "john_doe",
         "email": "john@example.com",
         "password": "SuperSecret123",
     }
@@ -37,12 +37,14 @@ class TestCreateUser:
         result = user_service.create_user(valid_user_data)
 
         # Assert: filter called for both name and email uniqueness checks
-        mock_users_cls.objects.filter.assert_any_call(name=valid_user_data["name"])
+        mock_users_cls.objects.filter.assert_any_call(
+            username=valid_user_data["username"]
+        )
         mock_users_cls.objects.filter.assert_any_call(email=valid_user_data["email"])
 
         # Assert: user instance created with correct fields
         mock_users_cls.assert_called_once_with(
-            name=valid_user_data["name"],
+            username=valid_user_data["username"],
             email=valid_user_data["email"],
         )
 
@@ -66,7 +68,7 @@ class TestCreateUser:
 
         # Only the name check should have run before raising
         mock_users_cls.objects.filter.assert_called_once_with(
-            name=valid_user_data["name"]
+            username=valid_user_data["username"]
         )
         mock_users_cls.assert_not_called()
         # save() should never be reached
@@ -84,7 +86,9 @@ class TestCreateUser:
             user_service.create_user(valid_user_data)
 
         assert mock_users_cls.objects.filter.call_count == 2
-        mock_users_cls.objects.filter.assert_any_call(name=valid_user_data["name"])
+        mock_users_cls.objects.filter.assert_any_call(
+            username=valid_user_data["username"]
+        )
         mock_users_cls.objects.filter.assert_any_call(email=valid_user_data["email"])
         mock_users_cls.assert_not_called()
         # save() should never be reached
