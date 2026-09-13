@@ -22,7 +22,7 @@ def valid_payload():
     return {
         "email": "newuser@example.com",
         "password": "StrongPassword123!",
-        "name": "Jane",
+        "username": "Jane",
     }
 
 
