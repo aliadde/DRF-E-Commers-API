@@ -12,7 +12,7 @@ class UserRegisterRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = [
-            "name",
+            "username",
             "email",
             "password",
         ]
@@ -24,6 +24,6 @@ class UserRegisterResponseSerializer(serializers.ModelSerializer):
         model = Users
         fields = [
             "id",
-            "name",
+            "username",
             "email",
         ]

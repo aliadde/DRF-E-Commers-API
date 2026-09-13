@@ -1,10 +1,25 @@
-from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 
 
+class UserManager(BaseUserManager):
+    pass
+
+
 class Users(AbstractBaseUser):
-    name = models.CharField(max_length=100, blank=False, null=False)
-    email = models.EmailField(max_length=150)
-    password = models.CharField()
-    last_login = models.DateTimeField(blank=True, null=True)
-    USERNAME_FIELD = "email"
+    username = models.CharField(
+        max_length=100,
+        unique=True,
+    )
+
+    email = models.EmailField(
+        max_length=150,
+    )
+
+    last_login = models.DateTimeField(
+        blank=True,
+        null=True,
+    )
+
+    USERNAME_FIELD = "username"
+    objects = UserManager()

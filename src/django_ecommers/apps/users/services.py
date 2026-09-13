@@ -10,14 +10,14 @@ class UserService:
     def create_user(self, user_data: dict[str, str]) -> Users:
         """creating user"""
         # if same name or email was exist in database raise error to user
-        if Users.objects.filter(name=user_data.get("name")).exists():
+        if Users.objects.filter(username=user_data.get("username")).exists():
             raise DuplicateHTTPException
 
         if Users.objects.filter(email=user_data.get("email")).exists():
             raise DuplicateHTTPException
 
         new_user = Users(
-            name=user_data.get("name"),
+            username=user_data.get("username"),
             email=user_data.get("email"),
         )
 
