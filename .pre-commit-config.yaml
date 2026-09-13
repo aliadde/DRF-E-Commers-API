@@ -36,4 +36,4 @@ repos:
     rev: v2.3.1
     hooks:
       - id: mypy
-        exclude: ^(tests/|.*migrations/.*)
+        exclude: ^(test.*|src/tests/|tests/|.*migrations/.*)

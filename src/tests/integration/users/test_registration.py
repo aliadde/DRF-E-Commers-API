@@ -13,8 +13,7 @@ def api_client():
 
 @pytest.fixture
 def url():
-    # آدرس واقعی url name خودتون رو اینجا جایگزین کنید
-    return reverse("users")
+    return reverse("users_register")
 
 
 @pytest.fixture

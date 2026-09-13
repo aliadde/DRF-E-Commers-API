@@ -28,7 +28,9 @@ def valid_payload():
 
 @pytest.fixture
 def registered_user(api_client, url, valid_payload):
-    response = api_client.post(reverse("users"), data=valid_payload, format="json")
+    response = api_client.post(
+        reverse("users_register"), data=valid_payload, format="json"
+    )
     assert response.status_code == status.HTTP_201_CREATED
     assert Users.objects.filter(email=valid_payload["email"]).exists()
     assert response.data["email"] == valid_payload["email"]

@@ -7,7 +7,7 @@ class TestItemsE2E:
 
     def test_register_then_login(self, api_client):
         resp_register = api_client.post(
-            "/user/auth/",
+            "/user/register/",
             json={
                 "username": "tester",
                 "password": "testpass123",
@@ -30,15 +30,15 @@ class TestItemsE2E:
             "password": "testpass123",
             "email": "tester@gmail.com",
         }
-        first = api_client.post("/user/auth/", json=payload)
+        first = api_client.post("/user/register/", json=payload)
         assert first.status_code == 201
 
-        second = api_client.post("/user/auth/", json=payload)
+        second = api_client.post("/user/register/", json=payload)
         assert second.status_code == 400
 
     def test_register_duplicate_email_fails(self, api_client):
         api_client.post(
-            "/user/auth/",
+            "/user/register/",
             json={
                 "username": "tester1",
                 "password": "testpass123",
@@ -46,7 +46,7 @@ class TestItemsE2E:
             },
         )
         resp = api_client.post(
-            "/user/auth/",
+            "/user/register/",
             json={
                 "username": "tester2",
                 "password": "testpass123",
@@ -57,14 +57,14 @@ class TestItemsE2E:
 
     def test_register_missing_field_fails(self, api_client):
         resp = api_client.post(
-            "/user/auth/",
+            "/user/register/",
             json={"username": "tester", "password": "testpass123"},  # no email
         )
         assert resp.status_code == 400
 
     def test_login_wrong_password_fails(self, api_client):
         api_client.post(
-            "/user/auth/",
+            "/user/register/",
             json={
                 "username": "tester",
                 "password": "testpass123",

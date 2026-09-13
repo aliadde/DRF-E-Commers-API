@@ -3,9 +3,11 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from django_ecommers.apps.users.views import UserView
+from django_ecommers.apps.users.views import UserPrivateView, UserPublicView
 
+# user/...
 urlpatterns = [
-    path("auth/", view=UserView.as_view(), name="users"),
+    path("register/", view=UserPublicView.as_view(), name="users_register"),
     path("login/", TokenObtainPairView.as_view(), name="login"),
+    path("me/", UserPrivateView.as_view(), name="users_private"),
 ]

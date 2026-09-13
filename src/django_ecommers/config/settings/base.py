@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "rest_framework",
     "django_ecommers.apps.users.apps.UsersConfig",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 # users table define for django
 AUTH_USER_MODEL = "users.Users"
@@ -36,6 +37,10 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    # custome serializer (custome clain added)
+    "TOKEN_OBTAIN_SERIALIZER": "django_ecommers.apps.users.serializer.MyTokenObtainPairSerializer",  # noqa: E501
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 # Middlewares
