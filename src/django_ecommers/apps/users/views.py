@@ -1,12 +1,15 @@
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from django_ecommers.apps.users.models import Users
 from django_ecommers.apps.users.serializer import (
     UserMeResponseSerializer,
     UserRegisterRequestSerializer,
     UserRegisterResponseSerializer,
+    UserResetPasswordSerializer,
     UserUpdateResponseSerializer,
 )
 from django_ecommers.apps.users.services import UserService
@@ -51,3 +54,26 @@ class UserPrivateView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+class UserPasswordResetView(APIView):
+    """Reset user password"""
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request: Request) -> Response:
+        # serializer
+        serializer = UserResetPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user: Users = request.user
+        if user.check_password(request.data.get("current_password")):
+            # change password to new one
+            user.set_password(request.data.get("new_password"))
+            user.save()
+
+            return Response({"message": "Your password reset successfully."})
+        return Response(
+            {"error": "Your current_password is incorrect."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )

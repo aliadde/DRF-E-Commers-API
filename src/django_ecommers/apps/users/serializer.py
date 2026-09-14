@@ -56,6 +56,16 @@ class UserUpdateResponseSerializer(serializers.ModelSerializer):
 
 
 # ========================
+# Reset Password Serializers
+# ========================
+class UserResetPasswordSerializer(serializers.Serializer):
+    current_password: serializers = serializers.CharField(
+        required=True, write_only=True
+    )
+    new_password: serializers = serializers.CharField(required=True, write_only=True)
+
+
+# ========================
 # Token Custome Serializers
 # ========================
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
