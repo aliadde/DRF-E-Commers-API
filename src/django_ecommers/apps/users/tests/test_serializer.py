@@ -2,14 +2,20 @@ import pytest
 
 from django_ecommers.apps.users.models import Users
 from django_ecommers.apps.users.serializer import (
+    MyTokenObtainPairSerializer,
+    UserMeResponseSerializer,
     UserRegisterRequestSerializer,
     UserRegisterResponseSerializer,
+    UserUpdateResponseSerializer,
 )
 
 
+# ========================
+# Register Request Serializer
+# ========================
 @pytest.mark.django_db
 class TestUserRegisterRequestSerializer:
-    """test for registeration serializer"""
+    """Tests for registration request serializer."""
 
     def valid_payload(self):
         return {
@@ -20,13 +26,24 @@ class TestUserRegisterRequestSerializer:
 
     def test_valid_data_is_accepted(self):
         serializer = UserRegisterRequestSerializer(data=self.valid_payload())
+
         assert serializer.is_valid(), serializer.errors
+
+    def test_missing_username_is_invalid(self):
+        payload = self.valid_payload()
+        payload.pop("username")
+
+        serializer = UserRegisterRequestSerializer(data=payload)
+
+        assert serializer.is_valid() is False
+        assert "username" in serializer.errors
 
     def test_missing_email_is_invalid(self):
         payload = self.valid_payload()
         payload.pop("email")
 
         serializer = UserRegisterRequestSerializer(data=payload)
+
         assert serializer.is_valid() is False
         assert "email" in serializer.errors
 
@@ -35,14 +52,16 @@ class TestUserRegisterRequestSerializer:
         payload["email"] = "not-an-email"
 
         serializer = UserRegisterRequestSerializer(data=payload)
+
         assert serializer.is_valid() is False
         assert "email" in serializer.errors
 
-    def test_blank_name_is_invalid(self):
+    def test_blank_username_is_invalid(self):
         payload = self.valid_payload()
         payload["username"] = ""
 
         serializer = UserRegisterRequestSerializer(data=payload)
+
         assert serializer.is_valid() is False
         assert "username" in serializer.errors
 
@@ -51,48 +70,78 @@ class TestUserRegisterRequestSerializer:
         payload.pop("password")
 
         serializer = UserRegisterRequestSerializer(data=payload)
+
         assert serializer.is_valid() is False
         assert "password" in serializer.errors
 
     def test_password_field_is_write_only(self):
-
         serializer = UserRegisterRequestSerializer(data=self.valid_payload())
-        serializer.is_valid()
+
+        assert serializer.is_valid(), serializer.errors
 
         assert "password" not in serializer.data
 
+    def test_validated_data_contains_password(self):
+        serializer = UserRegisterRequestSerializer(data=self.valid_payload())
+
+        assert serializer.is_valid(), serializer.errors
+
+        assert "password" in serializer.validated_data
+        assert serializer.validated_data["password"] == "StrongPass123"
+
     def test_save_creates_user_in_db(self):
         serializer = UserRegisterRequestSerializer(data=self.valid_payload())
-        assert serializer.is_valid()
+
+        assert serializer.is_valid(), serializer.errors
 
         user = serializer.save()
 
         assert isinstance(user, Users)
         assert Users.objects.filter(pk=user.pk).exists()
+        assert user.username == "Ali Rezaei"
         assert user.email == "ali@example.com"
 
+    def test_password_is_not_stored_as_plain_text(self):
+        serializer = UserRegisterRequestSerializer(data=self.valid_payload())
 
+        assert serializer.is_valid(), serializer.errors
+
+        user = serializer.save()
+
+        assert user.password != "StrongPass123"
+        assert user.check_password("StrongPass123")
+
+
+# ========================
+# Register Response Serializer
+# ========================
 @pytest.mark.django_db
 class TestUserRegisterResponseSerializer:
-    """test serializer response regisration"""
+    """Tests for registration response serializer."""
 
     def create_user(self):
-        return Users.objects.create(username="Sara", email="sara@example.com")
+        user = Users.objects.create(
+            username="Sara",
+            email="sara@example.com",
+        )
+        user.set_password("something-secret")
+        user.save()
+
+        return user
 
     def test_response_contains_expected_fields(self):
         user = self.create_user()
+
         serializer = UserRegisterResponseSerializer(instance=user)
 
-        assert set(serializer.data.keys()) == {"id", "username", "email"}
+        assert set(serializer.data.keys()) == {
+            "id",
+            "username",
+            "email",
+        }
 
     def test_response_never_exposes_password(self):
-        """
-        امنیتی‌ترین تست این فایل: مطمئن می‌شیم پسورد
-        (حتی هش‌شده‌ش) هیچ‌وقت توی response لو نره.
-        """
         user = self.create_user()
-        user.set_password("something-secret")
-        user.save()
 
         serializer = UserRegisterResponseSerializer(instance=user)
 
@@ -100,8 +149,146 @@ class TestUserRegisterResponseSerializer:
 
     def test_response_values_match_instance(self):
         user = self.create_user()
+
         serializer = UserRegisterResponseSerializer(instance=user)
 
         assert serializer.data["id"] == user.id
         assert serializer.data["username"] == user.username
         assert serializer.data["email"] == user.email
+
+
+# ========================
+# GET Me Serializer
+# ========================
+@pytest.mark.django_db
+class TestUserMeResponseSerializer:
+    """Tests for user me response serializer."""
+
+    def create_user(self):
+        user = Users.objects.create(
+            username="Ali",
+            email="ali@example.com",
+        )
+        user.set_password("StrongPass123")
+        user.save()
+
+        return user
+
+    def test_response_contains_expected_fields(self):
+        user = self.create_user()
+
+        serializer = UserMeResponseSerializer(instance=user)
+
+        assert set(serializer.data.keys()) == {
+            "id",
+            "username",
+            "email",
+            "last_login",
+        }
+
+    def test_response_does_not_expose_password(self):
+        user = self.create_user()
+
+        serializer = UserMeResponseSerializer(instance=user)
+
+        assert "password" not in serializer.data
+
+    def test_response_values_match_instance(self):
+        user = self.create_user()
+
+        serializer = UserMeResponseSerializer(instance=user)
+
+        assert serializer.data["id"] == user.id
+        assert serializer.data["username"] == user.username
+        assert serializer.data["email"] == user.email
+        assert serializer.data["last_login"] == (
+            user.last_login.isoformat().replace("+00:00", "Z")
+            if user.last_login
+            else None
+        )
+
+
+# ========================
+# PATCH User Response Serializer
+# ========================
+@pytest.mark.django_db
+class TestUserUpdateResponseSerializer:
+    """Tests for user update response serializer."""
+
+    def create_user(self):
+        user = Users.objects.create(
+            username="Ali",
+            email="ali@example.com",
+        )
+        user.set_password("StrongPass123")
+        user.save()
+
+        return user
+
+    def test_response_contains_expected_fields(self):
+        user = self.create_user()
+
+        serializer = UserUpdateResponseSerializer(instance=user)
+
+        assert set(serializer.data.keys()) == {
+            "username",
+            "email",
+            "last_login",
+        }
+
+    def test_response_does_not_expose_id(self):
+        user = self.create_user()
+
+        serializer = UserUpdateResponseSerializer(instance=user)
+
+        assert "id" not in serializer.data
+
+    def test_response_does_not_expose_password(self):
+        user = self.create_user()
+
+        serializer = UserUpdateResponseSerializer(instance=user)
+
+        assert "password" not in serializer.data
+
+    def test_response_values_match_instance(self):
+        user = self.create_user()
+
+        serializer = UserUpdateResponseSerializer(instance=user)
+
+        assert serializer.data["username"] == user.username
+        assert serializer.data["email"] == user.email
+
+
+# ========================
+# Custom JWT Token Serializer
+# ========================
+@pytest.mark.django_db
+class TestMyTokenObtainPairSerializer:
+    """Tests for custom JWT token serializer."""
+
+    def create_user(self):
+        user = Users.objects.create(
+            username="Ali",
+            email="ali@example.com",
+        )
+
+        user.set_password("StrongPass123")
+        user.save()
+
+        return user
+
+    def test_token_contains_username_claim(self):
+        user = self.create_user()
+
+        token = MyTokenObtainPairSerializer.get_token(user)
+
+        assert token["username"] == user.username
+
+    def test_token_contains_standard_claims(self):
+        user = self.create_user()
+
+        token = MyTokenObtainPairSerializer.get_token(user)
+
+        assert "user_id" in token
+        assert "token_type" in token
+        assert token["token_type"] == "refresh"
