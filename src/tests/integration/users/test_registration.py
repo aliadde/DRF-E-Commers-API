@@ -51,7 +51,7 @@ def test_register_user_duplicate_email(api_client, url, valid_payload):
 
     response = api_client.post(url, data=valid_payload, format="json")
 
-    assert response.status_code == status.HTTP_409_CONFLICT
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.django_db

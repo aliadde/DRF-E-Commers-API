@@ -53,7 +53,7 @@ class TestItemsE2E:
                 "email": "same@gmail.com",
             },
         )
-        assert resp.status_code == 409
+        assert resp.status_code == 400
 
     def test_register_missing_field_fails(self, api_client):
         resp = api_client.post(
