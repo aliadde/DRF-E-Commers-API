@@ -12,9 +12,7 @@ class Users(AbstractBaseUser):
         unique=True,
     )
 
-    email = models.EmailField(
-        max_length=150,
-    )
+    email = models.EmailField(max_length=150, unique=True)
 
     last_login = models.DateTimeField(
         blank=True,

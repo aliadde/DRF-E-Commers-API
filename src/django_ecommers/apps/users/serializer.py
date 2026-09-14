@@ -46,8 +46,7 @@ class UserMeResponseSerializer(serializers.ModelSerializer):
 class UserUpdateResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ["username", "password", "email", "last_login"]
-        extra_kwargs = {"password": {"write_only": True}}
+        fields = ["username", "email", "last_login"]
 
 
 # ========================
