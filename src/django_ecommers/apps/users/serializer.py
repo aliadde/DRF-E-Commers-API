@@ -41,6 +41,16 @@ class UserMeResponseSerializer(serializers.ModelSerializer):
 
 
 # ========================
+# PATCH User Serializers
+# ========================
+class UserUpdateResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = ["username", "password", "email", "last_login"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+
+# ========================
 # Token Custome Serializers
 # ========================
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

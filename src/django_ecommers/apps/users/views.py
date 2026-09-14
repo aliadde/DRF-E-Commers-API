@@ -7,6 +7,7 @@ from django_ecommers.apps.users.serializer import (
     UserMeResponseSerializer,
     UserRegisterRequestSerializer,
     UserRegisterResponseSerializer,
+    UserUpdateResponseSerializer,
 )
 from django_ecommers.apps.users.services import UserService
 
@@ -31,6 +32,7 @@ class UserPublicView(APIView):
 
 
 class UserPrivateView(APIView):
+    # jwt token and Authorization header is require for this class view
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -40,3 +42,11 @@ class UserPrivateView(APIView):
 
     def patch(self, request):
         """User update itself data"""
+        # request.user is exactly the authenticated user object of class users.Users
+        # partial: if true, the fields are optional (not require)
+        serializer = UserUpdateResponseSerializer(
+            request.user, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
