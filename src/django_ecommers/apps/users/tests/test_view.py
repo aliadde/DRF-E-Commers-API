@@ -198,10 +198,8 @@ class TestUserPublicViewPost:
 
 
 # ---------------------------------------------------------------------------
-# UserPrivateView.get
+# UserPrivateView.get Get User
 # ---------------------------------------------------------------------------
-
-
 @pytest.mark.django_db
 class TestUserPrivateViewGet:
     """Tests for UserPrivateView.get"""
@@ -262,10 +260,8 @@ class TestUserPrivateViewGet:
 
 
 # ---------------------------------------------------------------------------
-# UserPrivateView.patch
+# UserPrivateView.patch Update
 # ---------------------------------------------------------------------------
-
-
 @pytest.mark.django_db
 class TestUserPrivateViewPatch:
     """Tests for UserPrivateView.patch"""
@@ -379,6 +375,9 @@ class TestUserPrivateViewPatch:
             assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
+# ---------------------------------------------------------------------------
+# UserPrivateView.post Reset Password
+# ---------------------------------------------------------------------------
 @pytest.mark.django_db
 class TestUserPasswordResetView:
     @pytest.fixture

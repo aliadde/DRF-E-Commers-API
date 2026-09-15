@@ -50,6 +50,16 @@ class TestUsersModelFieldConstraints:
         with pytest.raises(ValidationError):
             user.full_clean()
 
+    def test_user_email_field_is_unique(slef):
+        email_field = Users._meta.get_field("email")
+
+        assert email_field.unique is True
+
+    def test_user_username_field_is_unique(self):
+        username_field = Users._meta.get_field("username")
+
+        assert username_field.unique is True
+
 
 @pytest.mark.django_db
 class TestUsersModelAuthBehavior:

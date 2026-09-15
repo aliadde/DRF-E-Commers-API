@@ -7,6 +7,7 @@ from django_ecommers.apps.users.serializer import (
     UserRegisterRequestSerializer,
     UserRegisterResponseSerializer,
     UserUpdateResponseSerializer,
+    UserResetPasswordSerializer,
 )
 
 
@@ -257,6 +258,80 @@ class TestUserUpdateResponseSerializer:
 
         assert serializer.data["username"] == user.username
         assert serializer.data["email"] == user.email
+
+
+# ========================
+# Reset Password Serializer
+# ========================
+@pytest.mark.django_db
+class TestUserResetPasswordSerializer:
+    """Tests for password reset serializer."""
+
+    def valid_payload(self):
+        return {
+            "current_password": "OldPass123",
+            "new_password": "NewPass123",
+        }
+
+    def test_valid_data_is_accepted(self):
+        serializer = UserResetPasswordSerializer(data=self.valid_payload())
+
+        assert serializer.is_valid(), serializer.errors
+
+    def test_missing_current_password_is_invalid(self):
+        payload = self.valid_payload()
+        payload.pop("current_password")
+
+        serializer = UserResetPasswordSerializer(data=payload)
+
+        assert serializer.is_valid() is False
+        assert "current_password" in serializer.errors
+
+    def test_missing_new_password_is_invalid(self):
+        payload = self.valid_payload()
+        payload.pop("new_password")
+
+        serializer = UserResetPasswordSerializer(data=payload)
+
+        assert serializer.is_valid() is False
+        assert "new_password" in serializer.errors
+
+    def test_blank_current_password_is_invalid(self):
+        payload = self.valid_payload()
+        payload["current_password"] = ""
+
+        serializer = UserResetPasswordSerializer(data=payload)
+
+        assert serializer.is_valid() is False
+        assert "current_password" in serializer.errors
+
+    def test_blank_new_password_is_invalid(self):
+        payload = self.valid_payload()
+        payload["new_password"] = ""
+
+        serializer = UserResetPasswordSerializer(data=payload)
+
+        assert serializer.is_valid() is False
+        assert "new_password" in serializer.errors
+
+    def test_password_fields_are_write_only(self):
+        serializer = UserResetPasswordSerializer(data=self.valid_payload())
+
+        assert serializer.is_valid(), serializer.errors
+
+        assert "current_password" not in serializer.data
+        assert "new_password" not in serializer.data
+
+    def test_validated_data_contains_passwords(self):
+        serializer = UserResetPasswordSerializer(data=self.valid_payload())
+
+        assert serializer.is_valid(), serializer.errors
+
+        assert "current_password" in serializer.validated_data
+        assert "new_password" in serializer.validated_data
+
+        assert serializer.validated_data["current_password"] == "OldPass123"
+        assert serializer.validated_data["new_password"] == "NewPass123"
 
 
 # ========================
