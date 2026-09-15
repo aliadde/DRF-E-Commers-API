@@ -43,3 +43,7 @@ merge-to-main current_branch:
     git switch main
     git merge {{current_branch}}
     git switch {{current_branch}}
+
+# push to github main branch
+push *args:
+    proxychains4 git push origin main {{args}}
