@@ -1,14 +1,18 @@
 """Unit tests for UserPublicView and UserPrivateView."""
 
 from unittest.mock import MagicMock, patch
-
 import pytest
+
+from django.urls import reverse
+
+from rest_framework.test import APIClient
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from django_ecommers.apps.users.exceptions import DuplicateHTTPException
 from django_ecommers.apps.users.views import UserPrivateView, UserPublicView
+from django_ecommers.apps.users.models import Users
 
 
 # ---------------------------------------------------------------------------
@@ -373,3 +377,180 @@ class TestUserPrivateViewPatch:
             force_authenticate(request, user=mock_user)
             response = UserPrivateView.as_view()(request)
             assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+
+
+@pytest.mark.django_db
+class TestUserPasswordResetView:
+    @pytest.fixture
+    def api_client(self):
+        return APIClient()
+
+    @pytest.fixture
+    def user(self):
+        user = Users.objects.create(
+            username="testuser",
+            email="test@example.com",
+        )
+        user.set_password("OldPassword123!")
+        user.save()
+        user.refresh_from_db()
+        return user
+
+    @pytest.fixture
+    def authenticated_client(self, api_client, user):
+        api_client.force_authenticate(user=user)
+        return api_client
+
+    @pytest.fixture
+    def url(self):
+        return reverse("reset_password")
+
+    def test_password_reset_success(
+        self,
+        authenticated_client,
+        user,
+        url,
+    ):
+        response = authenticated_client.post(
+            url,
+            {
+                "current_password": "OldPassword123!",
+                "new_password": "NewPassword123!",
+            },
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data == {"message": "Your password reset successfully."}
+
+        user.refresh_from_db()
+        assert user.check_password("NewPassword123!")
+        assert not user.check_password("OldPassword123!")
+
+    def test_password_reset_with_wrong_current_password(
+        self,
+        authenticated_client,
+        user,
+        url,
+    ):
+        response = authenticated_client.post(
+            url,
+            {
+                "current_password": "WrongPassword123!",
+                "new_password": "NewPassword123!",
+            },
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.data == {"error": "Your current_password is incorrect."}
+
+        user.refresh_from_db()
+        assert user.check_password("OldPassword123!")
+        assert not user.check_password("NewPassword123!")
+
+    def test_password_reset_requires_authentication(
+        self,
+        api_client,
+        url,
+    ):
+        response = api_client.post(
+            url,
+            {
+                "current_password": "OldPassword123!",
+                "new_password": "NewPassword123!",
+            },
+        )
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_password_reset_missing_current_password(
+        self,
+        authenticated_client,
+        user,
+        url,
+    ):
+        response = authenticated_client.post(
+            url,
+            {
+                "new_password": "NewPassword123!",
+            },
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+        user.refresh_from_db()
+        assert user.check_password("OldPassword123!")
+
+    def test_password_reset_missing_new_password(
+        self,
+        authenticated_client,
+        user,
+        url,
+    ):
+        response = authenticated_client.post(
+            url,
+            {
+                "current_password": "OldPassword123!",
+            },
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+        user.refresh_from_db()
+        assert user.check_password("OldPassword123!")
+
+    def test_password_reset_with_empty_current_password(
+        self,
+        authenticated_client,
+        user,
+        url,
+    ):
+        response = authenticated_client.post(
+            url,
+            {
+                "current_password": "",
+                "new_password": "NewPassword123!",
+            },
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+        user.refresh_from_db()
+        assert user.check_password("OldPassword123!")
+
+    def test_password_reset_with_empty_new_password(
+        self,
+        authenticated_client,
+        user,
+        url,
+    ):
+        response = authenticated_client.post(
+            url,
+            {
+                "current_password": "OldPassword123!",
+                "new_password": "",
+            },
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+        user.refresh_from_db()
+        assert user.check_password("OldPassword123!")
+
+    def test_password_reset_with_same_password(
+        self,
+        authenticated_client,
+        user,
+        url,
+    ):
+        response = authenticated_client.post(
+            url,
+            {
+                "current_password": "OldPassword123!",
+                "new_password": "OldPassword123!",
+            },
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+
+        user.refresh_from_db()
+        assert user.check_password("OldPassword123!")

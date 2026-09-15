@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "pytest with argument manual",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "module": "pytest",
+            "args": "${file}::${command:pickArgs}::${selectedText}"
+        },
+        {
             "name": "pytest in root folder",
             "type": "debugpy",
             "request": "launch",

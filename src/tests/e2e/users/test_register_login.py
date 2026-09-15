@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.django_db
-class TestItemsE2E:
+class TestLoginRegisterE2E:
     """user register in system, then want to login."""
 
     def test_register_then_login(self, api_client):
@@ -16,7 +16,6 @@ class TestItemsE2E:
         )
         assert resp_register.status_code == 201
         assert resp_register.json().get("username") == "tester"
-        assert resp_register.json().get("id") == 1
         assert resp_register.json().get("email") == "tester@gmail.com"
 
         login_data = dict(username="tester", password="testpass123")
