@@ -1,33 +1,17 @@
-# tasks
+# products
 
-- [x] create users app
+the products applciation create
 
-- [x] defind users app
+setup folder and tests folder for products.
 
-- [x] create model of users
+create model
 
-- [x] write test for models of users app
+then serializer
 
-#
-
-# users
-
-- [ ] user regisration
-
-- [ ] user login
-
-- [ ] user delete
-
-- [ ] user update profile
+views (create, update,delete,readd)
 
 
 
-# push
+now in this phaase user **admin** only can have access to this products to change them or any create,update,delete
 
-- add github action for pusshing
-
-
-
-# end of prject tasks
-
-- [ ]
+the part reading and GET requests is for all users type.
