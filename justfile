@@ -11,7 +11,7 @@ format file='.':
     uv run ruff format {{file}}
 
 # python manage.py
-mange *args:
+manage *args:
     uv run python src/manage.py {{args}}
 
 # make migrations

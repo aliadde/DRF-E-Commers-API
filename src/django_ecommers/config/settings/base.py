@@ -19,10 +19,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "rest_framework_simplejwt",
+    # third party
     "rest_framework",
-    "django_ecommers.apps.users.apps.UsersConfig",
+    "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    # my apps
+    "django_ecommers.apps.users.apps.UsersConfig",
+    "django_ecommers.apps.products.apps.ProductsConfig",
 ]
 # users table define for django
 AUTH_USER_MODEL = "users.Users"

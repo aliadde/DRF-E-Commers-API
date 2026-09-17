@@ -1,3 +1,9 @@
 from django.db import models
 
-# Create your models here.
+
+class Products(models.Model):
+    name = models.CharField()
+    description = models.TextField(null=True, blank=True)
+    price = models.FloatField()
+    active = models.BooleanField(default=1)
+    # category = models.ForeignKey()  connect to category model table
