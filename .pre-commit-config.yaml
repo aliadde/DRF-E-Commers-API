@@ -1,4 +1,4 @@
-exclude: ^(\.vscode/|migrations/)
+exclude: ^(\.vscode/|.*/migrations/.*)
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
