@@ -7,3 +7,9 @@ class ProductPublicViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = "__all__"
+
+
+class ProductPrivateAdminViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields = "__all__"
