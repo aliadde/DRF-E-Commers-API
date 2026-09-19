@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -20,12 +21,11 @@ class ProductsPrivateAdminView(APIView):
     permission_classes = [IsStaffUser]
 
     def post(self, request):
-        # user already authenticated and authorized
         serializer = ProductPrivateAdminViewSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def patch(self, request):
         pass
