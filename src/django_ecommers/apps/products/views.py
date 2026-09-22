@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -27,8 +28,21 @@ class ProductsPrivateAdminView(APIView):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def patch(self, request):
-        pass
-
     def delete(self, request):
         pass
+
+
+class ProductUpdateView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsStaffUser]
+
+    def patch(self, request, pk):
+        product = get_object_or_404(Products, pk=pk)
+
+        serializer = ProductPrivateAdminViewSerializer(
+            product, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
