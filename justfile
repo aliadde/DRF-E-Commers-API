@@ -30,6 +30,10 @@ django-shell:
 pytest *args:
     uv run pytest {{args}}
 
+# pytest coverage
+ coverage *args:
+    uv run pytest --cov=src --cov-report=html {{args}}
+
 # pre-commit
 pre-commit *args:
     uv run pre-commit {{args}}
