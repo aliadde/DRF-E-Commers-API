@@ -31,7 +31,7 @@ pytest *args:
     uv run pytest {{args}}
 
 # pytest coverage
- coverage *args:
+coverage *args:
     uv run pytest --cov=src --cov-report=html {{args}}
 
 # pre-commit
