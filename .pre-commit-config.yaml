@@ -24,7 +24,7 @@ repos:
         exclude: ^tests/
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.7
+    rev: v0.16.8
     hooks:
       - id: ruff
         args: [--fix]
@@ -36,4 +36,9 @@ repos:
     rev: v2.3.1
     hooks:
       - id: mypy
+        additional_dependencies:
+          - django
+          - djangorestframework
+          - django-stubs
+          - djangorestframework-stubs
         exclude: ^(test.*|src/tests/|tests/|.*migrations/.*)
