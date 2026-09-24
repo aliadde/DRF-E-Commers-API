@@ -32,13 +32,12 @@ repos:
       - id: ruff-format
         # no exclude here -> tests/ IS included
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v2.3.1
+  - repo: local
     hooks:
       - id: mypy
-        additional_dependencies:
-          - django
-          - djangorestframework
-          - django-stubs
-          - djangorestframework-stubs
+        name: mypy
+        entry: uv run mypy .
+        language: system
+        types: [python]
+        pass_filenames: false
         exclude: ^(test.*|src/tests/|tests/|.*migrations/.*)
