@@ -3,8 +3,10 @@ target-version = "py312"
 
 [lint]
 exclude = [
-    'scripts',
     "**/tests/**",
+    "**/migrations/**",
+    "**/.vscode/**",
+    "**/scripts/**",
 ]
 select = [
     "ALL",
