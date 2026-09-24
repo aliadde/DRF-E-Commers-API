@@ -5,6 +5,16 @@ on:
     branches: ["main", "dev"]
   pull_request:
 
+env:
+  DJANGO_SETTINGS_MODULE=django_ecommers.config.settings
+  SECRET_KEY=django-ecommers-secret-key
+  DJANGO_ENV=development
+  DB_NAME=mydb
+  DB_USER=myuser
+  DB_PASSWORD=mypass
+  DB_HOST=localhost
+  DB_PORT=5432
+
 jobs:
   test:
     runs-on: ubuntu-latest
