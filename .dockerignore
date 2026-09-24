@@ -1,0 +1,29 @@
+# Git
+.git
+
+# Python-generated files
+**/__pycache__
+**/*.py[oc]
+build/
+dist/
+wheels/
+**/*.egg-info
+
+# Virtual environments
+.venv
+
+# environment files
+.env
+.env.*
+
+# database sqlite
+**/*.sqlite3
+
+# tools cache
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+
+# coverage
+htmlcov/
+.coverage
