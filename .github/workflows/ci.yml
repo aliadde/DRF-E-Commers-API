@@ -28,6 +28,6 @@ jobs:
       - name: Lint
         run: uv run ruff check .
       - name: Type checking
-        run: uv run mypy .
+        run: uv run mypy . --show-traceback
       - name: Tests
         run: uv run pytest
