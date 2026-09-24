@@ -66,10 +66,12 @@ class UserPasswordResetView(APIView):
         serializer = UserResetPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user: Users = request.user
-        if user.check_password(request.data.get("current_password")):
+        data = serializer.validated_data
+
+        user = request.user
+        if user.check_password(data["current_password"]):
             # change password to new one
-            user.set_password(request.data.get("new_password"))
+            user.set_password(data["new_password"])
             user.save()
 
             return Response({"message": "Your password reset successfully."})

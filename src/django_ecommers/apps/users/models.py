@@ -36,7 +36,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
     # is_superuser come from PermissionsMixin
 
     USERNAME_FIELD = "username"
-    REQUIRED_FIELDS: list = []
+    REQUIRED_FIELDS = []
     objects = UserManager()
 
     def __str__(self):

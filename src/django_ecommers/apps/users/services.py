@@ -17,8 +17,8 @@ class UserService:
             raise DuplicateHTTPException
 
         new_user = Users(
-            username=user_data.get("username"),
-            email=user_data.get("email"),
+            username=user_data["username"],
+            email=user_data["email"],
         )
 
         new_user.set_password(user_data.get("password"))

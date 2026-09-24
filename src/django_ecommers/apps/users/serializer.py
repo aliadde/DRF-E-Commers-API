@@ -59,10 +59,8 @@ class UserUpdateResponseSerializer(serializers.ModelSerializer):
 # Reset Password Serializers
 # ========================
 class UserResetPasswordSerializer(serializers.Serializer):
-    current_password: serializers = serializers.CharField(
-        required=True, write_only=True
-    )
-    new_password: serializers = serializers.CharField(required=True, write_only=True)
+    current_password = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True)
 
 
 # ========================
