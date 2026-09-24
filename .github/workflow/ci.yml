@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          pip install uv
+          uv sync --dev
+
+      - name: format
+        run: uv run ruff format .
+      - name: Lint
+        run: uv run ruff check .
+      - name: Type checking
+        run: uv run mypy .
+      - name: Tests
+        run: uv run pytest
