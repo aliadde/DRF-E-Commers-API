@@ -42,4 +42,4 @@ jobs:
       - name: Tests
         run: uv run pytest
       - name: Docker build
-        run: Docker build -t django_ecommers .
+        run: docker build -t django_ecommers .
