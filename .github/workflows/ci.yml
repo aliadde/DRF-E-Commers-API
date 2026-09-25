@@ -41,3 +41,5 @@ jobs:
         run: uv run mypy . --show-traceback
       - name: Tests
         run: uv run pytest
+      - name: Docker build
+        run: Docker build -t django_ecommers .
