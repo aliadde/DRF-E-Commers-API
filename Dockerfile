@@ -13,5 +13,6 @@ RUN uv sync --locked --no-install-project
 
 COPY . .
 
-
-CMD ["uv", "run", "python", "src/manage.py", "runserver", "0.0.0.0:8000"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
