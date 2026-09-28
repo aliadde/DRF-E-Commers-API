@@ -25,18 +25,21 @@ def products():
                 description="A powerful laptop",
                 price=1200.50,
                 active=True,
+                category=None,
             ),
             Products(
                 name="Mouse",
                 description="Wireless mouse",
                 price=35.99,
                 active=True,
+                category=None,
             ),
             Products(
                 name="Keyboard",
                 description=None,
                 price=75.00,
                 active=False,
+                category=None,
             ),
         ]
     )
@@ -61,6 +64,7 @@ def test_get_all_products(api_client, url, products):
             "description": products[0].description,
             "price": products[0].price,
             "active": products[0].active,
+            "category": products[0].category,
         },
         {
             "id": products[1].id,
@@ -68,6 +72,7 @@ def test_get_all_products(api_client, url, products):
             "description": products[1].description,
             "price": products[1].price,
             "active": products[1].active,
+            "category": products[0].category,
         },
         {
             "id": products[2].id,
@@ -75,6 +80,7 @@ def test_get_all_products(api_client, url, products):
             "description": products[2].description,
             "price": products[2].price,
             "active": products[2].active,
+            "category": products[0].category,
         },
     ]
 
@@ -163,6 +169,7 @@ def test_get_all_products_preserves_product_data(api_client, url):
             "description": "High performance laptop",
             "price": 2499.99,
             "active": True,
+            "category": None,
         }
     ]
 
@@ -247,6 +254,7 @@ def test_get_all_products_returns_expected_fields(api_client, url):
         "description",
         "price",
         "active",
+        "category",
     }
 
 
