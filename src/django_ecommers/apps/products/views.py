@@ -1,12 +1,22 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .models import Products
+from .models import Category, Products
 from .permissions import IsStaffUser
-from .serializer import ProductPrivateAdminViewSerializer, ProductPublicViewSerializer
+from .serializer import (
+    CategoryPublicViewSerializer,
+    ProductPrivateAdminViewSerializer,
+    ProductPublicViewSerializer,
+)
+
+
+class CategoryPublicView(ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategoryPublicViewSerializer
 
 
 class ProductsPublicView(APIView):

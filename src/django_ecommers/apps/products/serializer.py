@@ -1,6 +1,12 @@
 from rest_framework import serializers
 
-from .models import Products
+from .models import Category, Products
+
+
+class CategoryPublicViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
 
 
 class ProductPublicViewSerializer(serializers.ModelSerializer):
