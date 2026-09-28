@@ -10,7 +10,7 @@ class Products(models.Model):
     description = models.TextField(null=True, blank=True)
     price = models.FloatField()
     active = models.BooleanField(default=1)
-    category_id = models.ForeignKey(
+    category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
         blank=True,
