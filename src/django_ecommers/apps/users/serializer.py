@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Users
+from .models import Addresses, Users
 
 
 # ========================
@@ -76,3 +76,12 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # ...
 
         return token
+
+
+# ========================
+# Address Serializers
+# ========================
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Addresses
+        fields = "__all__"

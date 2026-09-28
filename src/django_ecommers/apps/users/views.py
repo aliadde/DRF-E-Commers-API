@@ -1,11 +1,13 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from django_ecommers.apps.users.models import Users
+from django_ecommers.apps.users.models import Addresses, Users
 from django_ecommers.apps.users.serializer import (
+    AddressSerializer,
     UserMeResponseSerializer,
     UserRegisterRequestSerializer,
     UserRegisterResponseSerializer,
@@ -79,3 +81,30 @@ class UserPasswordResetView(APIView):
             {"error": "Your current_password is incorrect."},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+
+class UserAddressGetView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        user: Users = request.user
+        address = get_object_or_404(Addresses, pk=pk)
+
+        if user.id == address.User.id:
+            serializer = AddressSerializer(address)
+            return Response(serializer.data)
+
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UserAddressPrivateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        pass
+
+    def patch(self, request):
+        pass
+
+    def delete(self, request):
+        pass
