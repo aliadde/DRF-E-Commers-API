@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Users
+from .models import Addresses, Users
 
 
 class CustomUserAdmin(UserAdmin):
@@ -45,7 +45,4 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(Users, CustomUserAdmin)
-"""
-claude chat that contain all detail of implementation.
-https://claude.ai/chat/395465d1-a4e5-469e-8f3c-e421572621b7
-"""
+admin.site.register(Addresses)

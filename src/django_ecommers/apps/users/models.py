@@ -41,3 +41,8 @@ class Users(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+
+class Addresses(models.Model):
+    location = models.TextField(null=False, blank=False)
+    User = models.ForeignKey(Users, on_delete=models.CASCADE)
