@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 
 
@@ -6,9 +7,9 @@ class Category(models.Model):
 
 
 class Products(models.Model):
-    name = models.CharField()
+    name = models.CharField(unique=True, null=False, blank=False)
     description = models.TextField(null=True, blank=True)
-    price = models.FloatField()
+    price = models.FloatField(validators=[MinValueValidator(0.0)])
     active = models.BooleanField(default=1)
     category = models.ForeignKey(
         Category,
