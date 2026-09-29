@@ -132,17 +132,21 @@ Create a `.env` file based on `.env.example`:
 
 ```env
 DJANGO_SETTINGS_MODULE=django_ecommers.config.settings
-SECRET_KEY=your-secret-key
-DJANGO_ENV=development
-
+SECRET_KEY=django-ecommers-secret-key
+DJANGO_ENV=development OR production
 DB_NAME=mydb
 DB_USER=myuser
 DB_PASSWORD=mypass
 DB_HOST=localhost
 DB_PORT=5432
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=admin@example.com
+DJANGO_SUPERUSER_PASSWORD=your-secure-password
 ```
 
 > Do not commit real credentials or secret keys to version control.
+
+> **Note:** The production environment uses a PostgreSQL database. Be sure to set the correct variables in the `.env` file.
 
 ---
 
@@ -250,6 +254,12 @@ Apply migrations:
 
 ```bash
 just migrate
+```
+
+Create admin user:
+
+```bash
+just manage seed_admin
 ```
 
 You can also use Django's management command directly:
