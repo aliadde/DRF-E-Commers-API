@@ -51,3 +51,6 @@ merge-to-main current_branch:
 # push to github main branch
 push *args:
     proxychains4 git push origin main {{args}}
+
+remove_sqlite_db_file:
+    rm src/django_ecommers/db.sqlite3
