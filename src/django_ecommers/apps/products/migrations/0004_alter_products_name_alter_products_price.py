@@ -5,20 +5,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('products', '0003_seed_categories'),
+        ("products", "0003_seed_categories"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='products',
-            name='name',
+            model_name="products",
+            name="name",
             field=models.CharField(unique=True),
         ),
         migrations.AlterField(
-            model_name='products',
-            name='price',
-            field=models.FloatField(validators=[django.core.validators.MinValueValidator(0.0)]),
+            model_name="products",
+            name="price",
+            field=models.FloatField(
+                validators=[django.core.validators.MinValueValidator(0.0)]
+            ),
         ),
     ]

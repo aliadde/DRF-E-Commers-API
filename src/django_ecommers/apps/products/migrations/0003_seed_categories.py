@@ -5,11 +5,11 @@ from django.db import migrations
 
 def create_categories(apps, schema_editor):
     # Important: Use apps.get_model to get the historical model version
-    Category = apps.get_model('products', 'Category')
-    
+    Category = apps.get_model("products", "Category")
+
     # Define your initial categories
-    initial_categories = ['electronic', 'books', 'clothing']
-    
+    initial_categories = ["electronic", "books", "clothing"]
+
     # Create each category
     for category_name in initial_categories:
         Category.objects.get_or_create(name=category_name)
@@ -17,14 +17,13 @@ def create_categories(apps, schema_editor):
 
 def reverse_categories(apps, schema_editor):
     # Optional: Define how to undo this migration
-    Category = apps.get_model('products', 'Category')
-    Category.objects.filter(name__in=['electronic', 'books', 'clothing']).delete()
+    Category = apps.get_model("products", "Category")
+    Category.objects.filter(name__in=["electronic", "books", "clothing"]).delete()
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('products', '0002_category_products_category'),
+        ("products", "0002_category_products_category"),
     ]
 
     operations = [

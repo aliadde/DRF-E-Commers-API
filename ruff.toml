@@ -1,14 +1,14 @@
 line-length = 88
 target-version = "py312"
-
-[lint]
-exclude = [
+extend-exclude =  [
     "**/tests/**",
     "**/migrations/**",
     "**/.vscode/**",
     "**/scripts/**",
     "**/docs/**",
 ]
+[lint]
+
 select = [
     "ALL",
 ]
