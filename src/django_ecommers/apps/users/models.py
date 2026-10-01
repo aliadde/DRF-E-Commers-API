@@ -45,4 +45,4 @@ class Users(AbstractBaseUser, PermissionsMixin):
 
 class Addresses(models.Model):
     location = models.TextField(null=False, blank=False)
-    User = models.ForeignKey(Users, on_delete=models.CASCADE)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
