@@ -6,6 +6,14 @@ from rest_framework.test import APIClient
 from django_ecommers.apps.products.models import Products
 from django_ecommers.apps.users.models import Users
 
+from django.core.cache import cache
+
+
+@pytest.fixture(autouse=True)
+def clear_redis_cache():
+    cache.clear()
+    yield
+    cache.clear()
 
 # ---------------
 # Fixtures
