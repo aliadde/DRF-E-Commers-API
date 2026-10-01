@@ -11,6 +11,7 @@ class Products(models.Model):
     description = models.TextField(null=True, blank=True)
     price = models.FloatField(validators=[MinValueValidator(0.0)])
     active = models.BooleanField(default=1)
+    quantity = models.IntegerField(default=1, validators=[MinValueValidator(0)])
     category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
