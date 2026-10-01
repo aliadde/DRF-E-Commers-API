@@ -5,6 +5,14 @@ from rest_framework.test import APIClient
 
 from django_ecommers.apps.products.models import Products
 
+from django.core.cache import cache
+
+
+@pytest.fixture(autouse=True)
+def clear_redis_cache():
+    cache.clear()
+    yield
+    cache.clear()
 
 @pytest.fixture
 def api_client():
@@ -26,6 +34,7 @@ def products():
                 price=1200.50,
                 active=True,
                 category=None,
+                quantity=1
             ),
             Products(
                 name="Mouse",
@@ -33,6 +42,7 @@ def products():
                 price=35.99,
                 active=True,
                 category=None,
+                quantity=1
             ),
             Products(
                 name="Keyboard",
@@ -40,6 +50,7 @@ def products():
                 price=75.00,
                 active=False,
                 category=None,
+                quantity=1
             ),
         ]
     )
@@ -65,6 +76,7 @@ def test_get_all_products(api_client, url, products):
             "price": products[0].price,
             "active": products[0].active,
             "category": products[0].category,
+            "quantity": products[0].quantity
         },
         {
             "id": products[1].id,
@@ -72,7 +84,8 @@ def test_get_all_products(api_client, url, products):
             "description": products[1].description,
             "price": products[1].price,
             "active": products[1].active,
-            "category": products[0].category,
+            "category": products[1].category,
+            "quantity": products[1].quantity
         },
         {
             "id": products[2].id,
@@ -80,7 +93,8 @@ def test_get_all_products(api_client, url, products):
             "description": products[2].description,
             "price": products[2].price,
             "active": products[2].active,
-            "category": products[0].category,
+            "category": products[2].category,
+            "quantity": products[2].quantity
         },
     ]
 
@@ -170,6 +184,7 @@ def test_get_all_products_preserves_product_data(api_client, url):
             "price": 2499.99,
             "active": True,
             "category": None,
+            "quantity": 1
         }
     ]
 
@@ -255,6 +270,7 @@ def test_get_all_products_returns_expected_fields(api_client, url):
         "price",
         "active",
         "category",
+        "quantity",
     }
 
 
