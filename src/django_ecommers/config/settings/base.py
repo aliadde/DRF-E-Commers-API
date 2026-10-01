@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     # my apps
     "django_ecommers.apps.users.apps.UsersConfig",
     "django_ecommers.apps.products.apps.ProductsConfig",
+    "django_ecommers.apps.baskets.apps.BasketsConfig",
 ]
 # users table define for django
 AUTH_USER_MODEL = "users.Users"

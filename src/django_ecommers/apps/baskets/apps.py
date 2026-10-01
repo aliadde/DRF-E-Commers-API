@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class BasketsConfig(AppConfig):
-    name = "baskets"
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "django_ecommers.apps.baskets"
