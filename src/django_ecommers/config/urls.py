@@ -8,5 +8,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("user/", include("django_ecommers.apps.users.urls")),
     path("product/", include("django_ecommers.apps.products.urls")),
+    path("basket/", include("django_ecommers.apps.baskets.urls")),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
