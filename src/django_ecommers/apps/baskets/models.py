@@ -6,7 +6,7 @@ from django_ecommers.apps.users.models import Users
 
 
 class Baskets(models.Model):
-    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    user = models.OneToOneField(Users, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
