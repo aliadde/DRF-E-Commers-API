@@ -18,7 +18,13 @@ class BasketView(APIView):
 
         basket_serializer = BasketSerializer(user_basket)
 
-        return Response(basket_serializer.data)
+        basket_items = BasketItems.objects.filter(basket_id=user_basket.id)
+
+        basket_items_serializer = BasketItemsSerializer(basket_items, many=True)
+
+        return Response(
+            {"basket": basket_serializer.data, "items": basket_items_serializer.data}
+        )
 
 
 class BasketItemView(APIView):
@@ -27,17 +33,22 @@ class BasketItemView(APIView):
     def get(self, request, pk):
 
         user_basket = Baskets.objects.filter(user_id=request.user.id).first()
-        if not user_basket or user_basket.id != pk:
+        if not user_basket:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        basket_items = BasketItems.objects.filter(basket_id=pk)
+        item = BasketItems.objects.get(id=pk)
+        if not item or item.basket_id != user_basket.id:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-        basket_items_serializer = BasketItemsSerializer(basket_items, many=True)
+        item_serializer = BasketItemsSerializer(item)
 
-        return Response(basket_items_serializer.data)
+        return Response(item_serializer.data)
 
     def post(self, request, pk):
-        pass
+        basket_items_serializer = BasketItemsSerializer(data=request.data)
+
+        if basket_items_serializer.is_valid(raise_exception=True):
+            basket_items_serializer.save()
 
     def patch(self, request, pk):
         pass
