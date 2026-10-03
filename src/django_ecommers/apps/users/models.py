@@ -4,6 +4,11 @@ from django.db import models
 
 
 class UserManager(BaseUserManager):
+    def create_basket(self, user):
+        from django_ecommers.apps.baskets.models import Baskets
+
+        Baskets.objects.get_or_create(user=user)
+
     def create_user(self, username, email=None, password=None, **extra_fields):
         if not username:
             raise ValueError("username rquired.")
@@ -12,6 +17,9 @@ class UserManager(BaseUserManager):
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)  # hashing password
         user.save(using=self._db)
+
+        self.create_basket(user=user)
+
         return user
 
     def create_superuser(self, username, email=None, password=None, **extra_fields):

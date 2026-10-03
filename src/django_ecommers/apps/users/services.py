@@ -16,12 +16,12 @@ class UserService:
         if Users.objects.filter(email=user_data.get("email")).exists():
             raise DuplicateHTTPException
 
-        new_user = Users(
+        new_user = Users.objects.create_user(
             username=user_data["username"],
             email=user_data["email"],
+            password=user_data.get("password"),
         )
 
-        new_user.set_password(user_data.get("password"))
         new_user.save()
 
         return new_user
