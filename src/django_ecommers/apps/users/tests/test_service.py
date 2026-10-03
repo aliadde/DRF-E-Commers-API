@@ -27,58 +27,58 @@ class TestCreateUser:
 
     @patch("django_ecommers.apps.users.services.Users")
     def test_create_user_success(self, mock_users_cls, user_service, valid_user_data):
-        # Arrange: no existing user with same name/email
+        # Arrange: no existing user with same username/email
         mock_users_cls.objects.filter.return_value.exists.return_value = False
 
         mock_new_user = MagicMock()
-        mock_users_cls.return_value = mock_new_user
+        mock_users_cls.objects.create_user.return_value = mock_new_user
 
         # Act
         result = user_service.create_user(valid_user_data)
 
-        # Assert: filter called for both name and email uniqueness checks
+        # Assert: both uniqueness checks were performed
         mock_users_cls.objects.filter.assert_any_call(
             username=valid_user_data["username"]
         )
         mock_users_cls.objects.filter.assert_any_call(email=valid_user_data["email"])
 
-        # Assert: user instance created with correct fields
-        mock_users_cls.assert_called_once_with(
+        # Assert: create_user called with correct fields
+        mock_users_cls.objects.create_user.assert_called_once_with(
             username=valid_user_data["username"],
             email=valid_user_data["email"],
+            password=valid_user_data["password"],
         )
 
-        # Assert: password hashed and user saved
-        mock_new_user.set_password.assert_called_once_with(valid_user_data["password"])
+        # Assert: user saved
         mock_new_user.save.assert_called_once()
 
         # Assert: returned object is the created user
         assert result is mock_new_user
 
     @patch("django_ecommers.apps.users.services.Users")
-    def test_create_user_raises_when_name_exists(
+    def test_create_user_raises_when_username_exists(
         self, mock_users_cls, user_service, valid_user_data
     ):
-        # Arrange: first filter().exists() call (name check) returns True
+        # Arrange: username check returns True
         mock_users_cls.objects.filter.return_value.exists.return_value = True
 
         # Act / Assert
         with pytest.raises(DuplicateHTTPException):
             user_service.create_user(valid_user_data)
 
-        # Only the name check should have run before raising
+        # Only the username check should have run before raising
         mock_users_cls.objects.filter.assert_called_once_with(
             username=valid_user_data["username"]
         )
-        mock_users_cls.assert_not_called()
-        # save() should never be reached
-        mock_users_cls.return_value.save.assert_not_called()
+        # No user should have been created or saved
+        mock_users_cls.objects.create_user.assert_not_called()
+        mock_users_cls.objects.create_user.return_value.save.assert_not_called()
 
     @patch("django_ecommers.apps.users.services.Users")
     def test_create_user_raises_when_email_exists(
         self, mock_users_cls, user_service, valid_user_data
     ):
-        # Arrange: name check passes (False), email check fails (True)
+        # Arrange: username check passes (False), email check fails (True)
         mock_users_cls.objects.filter.return_value.exists.side_effect = [False, True]
 
         # Act / Assert
@@ -90,22 +90,24 @@ class TestCreateUser:
             username=valid_user_data["username"]
         )
         mock_users_cls.objects.filter.assert_any_call(email=valid_user_data["email"])
-        mock_users_cls.assert_not_called()
-        # save() should never be reached
-        mock_users_cls.return_value.save.assert_not_called()
+        # No user should have been created or saved
+        mock_users_cls.objects.create_user.assert_not_called()
+        mock_users_cls.objects.create_user.return_value.save.assert_not_called()
 
     @patch("django_ecommers.apps.users.services.Users")
-    def test_create_user_password_is_hashed_not_stored_plain(
+    def test_create_user_delegates_password_hashing_to_create_user(
         self, mock_users_cls, user_service, valid_user_data
     ):
         mock_users_cls.objects.filter.return_value.exists.return_value = False
         mock_new_user = MagicMock()
-        mock_users_cls.return_value = mock_new_user
+        mock_users_cls.objects.create_user.return_value = mock_new_user
 
         user_service.create_user(valid_user_data)
 
-        # set_password should be called with the raw password
-        mock_new_user.set_password.assert_called_once_with(valid_user_data["password"])
-        # Users() constructor should NOT have been called with a "password" kwarg
-        _, kwargs = mock_users_cls.call_args
-        assert "password" not in kwargs
+        # The raw password is handed to create_user, which is responsible for hashing
+        _, kwargs = mock_users_cls.objects.create_user.call_args
+        assert kwargs["password"] == valid_user_data["password"]
+
+        # The service itself must not touch the password or construct Users directly
+        mock_new_user.set_password.assert_not_called()
+        mock_users_cls.assert_not_called()
