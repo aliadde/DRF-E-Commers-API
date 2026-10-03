@@ -63,9 +63,7 @@ class BasketItemView(APIView):
         if not user_basket:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        item = BasketItems.objects.get(id=pk)
-        if not item or item.basket_id != user_basket.id:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        item = get_object_or_404(BasketItems, id=pk, basket=user_basket)
 
         item_serializer = BasketItemsSerializer(item)
 
