@@ -1,10 +1,13 @@
 from django.db import transaction
 from django.db.models import F
+from django.forms import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from django_ecommers.apps.products.models import Products
 
 from .models import BasketItems, Baskets
 from .serializer import BasketItemsSerializer, BasketSerializer
@@ -30,27 +33,42 @@ class BasketView(APIView):
         )
 
     def post(self, request):
-        user_basket = get_object_or_404(Baskets, user_id=request.user.id)
+        user_basket = get_object_or_404(
+            Baskets,
+            user_id=request.user.id,
+        )
 
         serializer = BasketItemsSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         product = serializer.validated_data["product"]
         quantity = serializer.validated_data["quantity"]
 
         with transaction.atomic():
+            # select_for_update: lock the row in database to prevent
+            # conflict or change druing our transaction.
+            product_obj = Products.objects.select_for_update().get(id=product.id)
+
             item, created = BasketItems.objects.get_or_create(
                 basket=user_basket,
                 product=product,
                 defaults={"quantity": quantity},
             )
+
+            final_quantity = quantity if created else item.quantity + quantity
+
+            if final_quantity > product_obj.quantity:
+                raise ValidationError(
+                    {"quantity": "Requested quantity exceeds available stock."}
+                )
+
             if not created:
-                item.quantity = F("quantity") + quantity
+                item.quantity = final_quantity
                 item.save(update_fields=["quantity"])
-                item.refresh_from_db()
 
         return Response(
             BasketItemsSerializer(item).data,
-            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+            status=(status.HTTP_201_CREATED if created else status.HTTP_200_OK),
         )
 
 
