@@ -58,8 +58,9 @@ class BasketView(APIView):
             final_quantity = quantity if created else item.quantity + quantity
 
             if final_quantity > product_obj.quantity:
-                raise ValidationError(
-                    {"quantity": "Requested quantity exceeds available stock."}
+                return Response(
+                    {"detail": "Requested quantity exceeds available stock."},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             if not created:
