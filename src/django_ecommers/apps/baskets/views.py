@@ -92,6 +92,6 @@ class BasketItemView(APIView):
         pass
 
     def delete(self, request, pk):
-        item = get_object_or_404(BasketItems, id=pk)
+        item = get_object_or_404(BasketItems, id=pk, basket__user=request.user)
         item.delete()
         return Response(status=status.HTTP_200_OK)
