@@ -89,14 +89,21 @@ class BasketItemView(APIView):
         return Response(item_serializer.data)
 
     def patch(self, request, pk):
-        basket_item = get_object_or_404(BasketItems, pk=pk)
+        with transaction.atomic():
+            basket_item = get_object_or_404(
+                BasketItems.objects.select_related("product").select_for_update(
+                    of=("self", "product")
+                ),
+                pk=pk,
+                basket__user=request.user,
+            )
 
-        serializer = BasketItemsSerializer(
-            basket_item,
-            data=request.data,
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+            serializer = BasketItemsSerializer(
+                basket_item,
+                data=request.data,
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
