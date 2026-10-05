@@ -89,7 +89,16 @@ class BasketItemView(APIView):
         return Response(item_serializer.data)
 
     def patch(self, request, pk):
-        pass
+        basket_item = get_object_or_404(BasketItems, pk=pk)
+
+        serializer = BasketItemsSerializer(
+            basket_item,
+            data=request.data,
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
         item = get_object_or_404(BasketItems, id=pk, basket__user=request.user)
