@@ -1,6 +1,7 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from django_ecommers.apps.products.models import Products
 from django_ecommers.apps.users.models import Addresses, Users
 
 
@@ -27,4 +28,13 @@ class Orders(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=False,
+    )
+
+
+class OrderItems(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    items_total = models.FloatField(validators=[MinValueValidator(0)])
+    product = models.ForeignKey(
+        Products, on_delete=models.SET_NULL, null=True, blank=False
     )
