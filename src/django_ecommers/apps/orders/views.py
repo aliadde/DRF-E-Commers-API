@@ -1,3 +1,15 @@
-from django.shortcuts import render
+from rest_framework.views import APIView
 
-# Create your views here.
+
+class OrdersView(APIView):
+    def get(self):
+        pass
+
+    def psot(self):
+        pass
+
+    def patch(self):
+        pass
+
+    def delete(self):
+        pass
