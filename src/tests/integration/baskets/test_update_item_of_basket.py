@@ -91,7 +91,7 @@ def post_item(client, url, product_id, quantity):
 @pytest.mark.django_db
 def test_update_item_success(authenticated_client):
     product = create_product(name="pr 1", price=21, quantity=3)
-    BasketItems.objects.create(
+    item = BasketItems.objects.create(
         basket=Baskets.objects.get(user__username="test"),
         product=product,
         quantity=2
@@ -103,7 +103,7 @@ def test_update_item_success(authenticated_client):
     }
 
     response = authenticated_client.patch(
-        url_creator(product.id),
+        url_creator(item.id),
         data=update_data,
         format="json"
     )

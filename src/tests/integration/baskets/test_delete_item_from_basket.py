@@ -79,7 +79,6 @@ def create_product(name: str, price: float, **kwargs):
 @pytest.mark.django_db
 def test_delete_item_from_basket_success(authenticated_client):
     product = create_product(name="pr 1", price=21 , quantity=3)
-    url = url_creator(product.id)
 
     # add to basket
     item = BasketItems.objects.create(
@@ -87,6 +86,7 @@ def test_delete_item_from_basket_success(authenticated_client):
         product=product,
         quantity=1,
     )
+    url = url_creator(item.id)
 
     response = authenticated_client.delete(url)
 
