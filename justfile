@@ -54,3 +54,11 @@ push *args:
 
 remove_sqlite_db_file:
     rm src/django_ecommers/db.sqlite3
+
+# ruff
+ruff *args:
+    uv run ruff {{args}}
+
+# ruff check fix
+lint:
+    uv run ruff check . --fix
