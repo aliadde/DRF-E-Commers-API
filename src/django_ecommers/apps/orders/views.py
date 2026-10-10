@@ -52,7 +52,7 @@ class OrderCreateView(APIView):
             products = Products.objects.select_for_update().filter(pk__in=product_ids)
             products_by_id = {product.pk: product for product in products}
 
-            total = Decimal("0.00")
+            total: float = 0.0
 
             for item in basket_items:
                 product = products_by_id[item.product_id]
