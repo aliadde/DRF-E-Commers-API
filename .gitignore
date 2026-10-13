@@ -21,3 +21,4 @@ wheels/
 
 htmlcov/
 *coverage*
+compose.override.yml
