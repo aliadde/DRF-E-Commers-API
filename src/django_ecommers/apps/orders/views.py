@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -11,9 +9,8 @@ from rest_framework.views import APIView
 from django_ecommers.apps.baskets.models import BasketItems, Baskets
 from django_ecommers.apps.orders.models import OrderItems, Orders
 from django_ecommers.apps.products.models import Products
-from django_ecommers.apps.users.models import Addresses, Users
 
-from .serializer import CreateOrderSerializer
+from .serializer import CreateOrderSerializer, GetOrderSerializer
 
 
 class OrdersView(APIView):
@@ -21,6 +18,15 @@ class OrdersView(APIView):
 
     def get(self, request, pk):
         """get specific order data."""
+
+        # get from database
+        order = get_object_or_404(Orders, id=pk, user=request.user)
+
+        # filter with serializer
+        serializer = GetOrderSerializer(order)
+
+        # return to user
+        return Response(serializer.data)
 
     def delete(self, request, pk):
         """cancel a order"""
