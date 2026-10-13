@@ -133,10 +133,14 @@ def test_create_order_success(authenticated_client):
 @pytest.mark.django_db
 def test_create_order_success_creates_order_and_items(authenticated_client):
     products = add_product_basket(client=authenticated_client)
+    address = Addresses.objects.create(
+        location="home",
+        user=Users.objects.get(username="test")
+    )
 
     response = authenticated_client.post(
         url_creator("create order"),
-        data={"address": 1},
+        data={"address": address.id},
         format="json",
     )
 
@@ -146,7 +150,7 @@ def test_create_order_success_creates_order_and_items(authenticated_client):
 
     assert order.total == pytest.approx(72)
     assert order.status == Orders.Status.PENDING
-    assert order.address_id == 1
+    assert order.address_id == address.id
 
     order_items = OrderItems.objects.filter(order=order)
 
@@ -161,7 +165,10 @@ def test_create_order_success_creates_order_and_items(authenticated_client):
 @pytest.mark.django_db
 def test_create_order_reduces_product_stock(authenticated_client):
     add_product_basket(client=authenticated_client)
-
+    address = Addresses.objects.create(
+        location="home",
+        user=Users.objects.get(username="test")
+    )
     products_before = {
         product.id: product.quantity
         for product in Products.objects.all()
@@ -169,7 +176,7 @@ def test_create_order_reduces_product_stock(authenticated_client):
 
     response = authenticated_client.post(
         url_creator("create order"),
-        data={"address": 1},
+        data={"address": address.id},
         format="json",
     )
 
@@ -182,7 +189,10 @@ def test_create_order_reduces_product_stock(authenticated_client):
 @pytest.mark.django_db
 def test_create_order_clears_basket(authenticated_client):
     add_product_basket(client=authenticated_client)
-
+    address = Addresses.objects.create(
+        location="home",
+        user=Users.objects.get(username="test")
+    )
     user = Users.objects.get(username="test")
     basket = Baskets.objects.get(user=user)
 
@@ -190,7 +200,7 @@ def test_create_order_clears_basket(authenticated_client):
 
     response = authenticated_client.post(
         url_creator("create order"),
-        data={"address": 1},
+        data={"address": address.id},
         format="json",
     )
 
@@ -200,9 +210,13 @@ def test_create_order_clears_basket(authenticated_client):
 
 @pytest.mark.django_db
 def test_create_order_empty_basket_fails(authenticated_client):
+    address = Addresses.objects.create(
+        location="home",
+        user=Users.objects.get(username="test")
+    )
     response = authenticated_client.post(
         url_creator("create order"),
-        data={"address": 1},
+        data={"address": address.id},
         format="json",
     )
 
@@ -217,14 +231,17 @@ def test_create_order_empty_basket_fails(authenticated_client):
 @pytest.mark.django_db
 def test_create_order_insufficient_stock_fails(authenticated_client):
     products = add_product_basket(client=authenticated_client)
-
+    address = Addresses.objects.create(
+        location="home",
+        user=Users.objects.get(username="test")
+    )
     product = Products.objects.get(name="pr 1")
     product.quantity = 1
     product.save(update_fields=["quantity"])
 
     response = authenticated_client.post(
         url_creator("create order"),
-        data={"address": 1},
+        data={"address": address.id},
         format="json",
     )
 
@@ -243,6 +260,10 @@ def test_create_order_insufficient_stock_fails(authenticated_client):
 
 @pytest.mark.django_db
 def test_create_order_invalid_address_fails(authenticated_client):
+    address = Addresses.objects.create(
+        location="home",
+        user=Users.objects.get(username="test")
+    )
     response = authenticated_client.post(
         url_creator("create order"),
         data={"address": 999999},
@@ -291,6 +312,10 @@ def test_create_order_does_not_affect_another_users_basket(
     authenticated_client,
     api_client,
 ):
+    address = Addresses.objects.create(
+        location="home",
+        user=Users.objects.get(username="test")
+    )
     add_product_basket(client=authenticated_client)
 
     # Create a second user and their basket.
@@ -316,7 +341,7 @@ def test_create_order_does_not_affect_another_users_basket(
 
     response = authenticated_client.post(
         url_creator("create order"),
-        data={"address": 1},
+        data={"address": address.id},
         format="json",
     )
 
