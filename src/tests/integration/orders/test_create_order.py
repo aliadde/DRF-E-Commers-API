@@ -121,10 +121,14 @@ def add_product_basket(client:APIClient)-> list[dict[str,str|int]]:
 @pytest.mark.django_db
 def test_create_order_success(authenticated_client):
     add_product_basket(client=authenticated_client)
+    address = Addresses.objects.create(
+        location="home",
+        user=Users.objects.get(username="test")
+    )
 
     response = authenticated_client.post(
         url_creator("create order"),
-        data={"address":1},
+        data={"address":address.id},
         format="json"
     )
     assert response.json().get("detail") == "Order created successfully."
