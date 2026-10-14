@@ -29,7 +29,44 @@ class OrdersView(APIView):
         return Response(serializer.data)
 
     def delete(self, request, pk):
-        """cancel a order"""
+        """cancel an order"""
+        with transaction.atomic():
+            # get order that requested
+            order = get_object_or_404(
+                Orders.objects.select_for_update(),
+                user=request.user,
+                id=pk,
+            )
+
+            # only pending orders can be cancelled
+            if order.status == Orders.Status.PENDING:
+                order.status = Orders.Status.CANCELLED
+
+                # back the product quantity
+                orderitems = OrderItems.objects.filter(order=order).select_related(
+                    "product"
+                )
+
+                product_ids = orderitems.values_list("product_id", flat=True)
+
+                products = (
+                    Products.objects.select_for_update()
+                    .filter(id__in=product_ids)
+                    .order_by("id")
+                )
+
+                locked_products = {product.id: product for product in products}
+
+                for item in orderitems:
+                    product = locked_products.get(item.product_id)
+
+                    if product:
+                        product.quantity += item.quantity
+                        product.save()
+
+                order.save()
+
+        return Response(status=status.HTTP_200_OK)
 
 
 class OrderCreateView(APIView):
