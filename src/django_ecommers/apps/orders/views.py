@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from django_ecommers.apps.baskets.models import BasketItems, Baskets
 from django_ecommers.apps.orders.models import OrderItems, Orders
 from django_ecommers.apps.products.models import Products
+from django_ecommers.apps.users.models import Addresses
 
 from .serializer import CreateOrderSerializer, GetOrderSerializer
 
@@ -113,10 +114,13 @@ class OrderCreateView(APIView):
 
                 total += product.price * item.quantity
 
+            address = get_object_or_404(
+                Addresses, id=serializer.validated_data["address"].id, user=request.user
+            )
             order = Orders(
                 user=request.user,
                 total=total,
-                address=serializer.validated_data["address"],
+                address=address,
             )
 
             try:

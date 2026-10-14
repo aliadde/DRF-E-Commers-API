@@ -306,10 +306,8 @@ def test_create_order_rejects_another_users_address(
 
     # The current serializer checks whether the address exists,
     # not whether it belongs to the authenticated user.
-    assert response.status_code == status.HTTP_201_CREATED
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
-    order = Orders.objects.get(pk=response.data["order_id"])
-    assert order.address == another_address
 
 
 @pytest.mark.django_db
