@@ -81,8 +81,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 # ========================
 # Address Serializers
 # ========================
-class AddressSerializer(serializers.Serializer):
+class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Addresses
-        fields = "__all__"
-        read_only_fields = ["id", "user"]
+        fields = ["id", "location"]
+        read_only_fields = ["id"]

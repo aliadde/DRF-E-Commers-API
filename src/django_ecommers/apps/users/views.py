@@ -90,7 +90,7 @@ class UserAddressGetView(APIView):
         user: Users = request.user
         address = get_object_or_404(Addresses, pk=pk)
 
-        if user.id == address.User.id:
+        if user.id == address.user.id:
             serializer = AddressSerializer(address)
             return Response(serializer.data)
 
@@ -107,7 +107,7 @@ class UserAddressPrivateView(APIView):
         address = Addresses.objects.create(
             user=request.user, location=serializer.validated_data["location"]
         )
-        return Response(AddressSerializer(address), status=status.HTTP_201_CREATED)
+        return Response(AddressSerializer(address).data, status=status.HTTP_201_CREATED)
 
     def delete(self, request):
 
@@ -116,6 +116,7 @@ class UserAddressPrivateView(APIView):
         address = Addresses.objects.filter(
             user=request.user, location=serializer.validated_data["location"]
         ).first()
-        address.delete()
-        address.save()
-        return Response(status=status.HTTP_200_OK)
+        if address:
+            address.delete()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
