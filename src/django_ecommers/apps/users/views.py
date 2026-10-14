@@ -101,10 +101,21 @@ class UserAddressPrivateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        pass
 
-    def patch(self, request):
-        pass
+        serializer = AddressSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        address = Addresses.objects.create(
+            user=request.user, location=serializer.validated_data["location"]
+        )
+        return Response(AddressSerializer(address), status=status.HTTP_201_CREATED)
 
     def delete(self, request):
-        pass
+
+        serializer = AddressSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        address = Addresses.objects.filter(
+            user=request.user, location=serializer.validated_data["location"]
+        ).first()
+        address.delete()
+        address.save()
+        return Response(status=status.HTTP_200_OK)
